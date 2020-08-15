@@ -1,12 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from './../../hooks/useForm';
-import { login } from '../../actions/auth';
+import {  startLoginEmailPassword, startGooglelogin } from '../../actions/auth';
 
 const LoginScreen = () => {
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
+
+    const {loading} = useSelector(state => state.ui)
 
     const [formValues, handleInputChange]  = useForm({
         email:'juan@gmail.com',
@@ -17,13 +19,19 @@ const LoginScreen = () => {
 
     const handleLogin = (e) => {
         e.preventDefault();
-        dispatch(login(12345, 'Juan'));
+        dispatch(startLoginEmailPassword (email, password));
     }   
+
+    const handleGoogleLogin = () => {
+        dispatch(startGooglelogin());
+    }
 
     return (
         <>
           <h3 className="auth__title mb-5">Login</h3>
-          <form onSubmit={handleLogin}>
+          <form onSubmit={handleLogin}
+            className="animate__animated animate__fadeIn animate__faster"
+          >
             <input 
                 type="text"
                 placeholder="Email"
@@ -46,7 +54,7 @@ const LoginScreen = () => {
             <button
                 className="btn btn-primary btn-block"
                 type="submit"
-                disabled={false}
+                disabled={loading}
             >
                 Login
             </button>
@@ -55,6 +63,7 @@ const LoginScreen = () => {
                 <p>Login with social networks</p>
                 <div 
                     className="google-btn"
+                    onClick={handleGoogleLogin}
                 >
                     <div className="google-icon-wrapper">
                         <img className="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="google button" />
